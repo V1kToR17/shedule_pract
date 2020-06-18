@@ -10,12 +10,12 @@ MainWindow::MainWindow(QWidget *parent)
     QDir dir = QDir::current();
     dir.cdUp();
     QSettings sett(dir.path() + "/settings.ini", QSettings::IniFormat);
-    port = sett.value("port").toInt();
-    driverName = sett.value("driver").toString();
-    hostName = sett.value("hostname").toString();
-    dbName = sett.value("dbname").toString();
-    userName = sett.value("username").toString();
-    pass = sett.value("password").toString();
+    port = sett.value("Firebird/port").toInt();
+    driverName = sett.value("PostgreSQL/driver").toString();
+    hostName = sett.value("PostgreSQL/hostname").toString();
+    dbName = sett.value("PostgreSQL/dbname").toString();
+    userName = sett.value("PostgreSQL/username").toString();
+    pass = sett.value("PostgreSQL/password").toString();
 
     db = QSqlDatabase::addDatabase(driverName);
     db.setPort(port);
