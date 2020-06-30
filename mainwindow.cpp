@@ -21,8 +21,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_pushButton_clicked()
 {
-    QDir dir = QDir::current();
-    dir.cdUp();
+    QDir dir = QCoreApplication::applicationDirPath();
     QSettings sett(dir.path() + "/settings.ini", QSettings::IniFormat);
     port = sett.value("PostgreSQL/port").toInt();
     driverName = sett.value("PostgreSQL/driver").toString();
@@ -44,13 +43,12 @@ void MainWindow::on_pushButton_clicked()
     }
 
     ui->tableView->setModel(model);
-    model->setQuery("select * from workers");
+    model->setQuery("select worker_fio, start_work, finish_work from workers");
 }
 
 void MainWindow::on_pushButton_2_clicked()
 {
-    QDir dir = QDir::current();
-    dir.cdUp();
+    QDir dir = QCoreApplication::applicationDirPath();
     QSettings sett(dir.path() + "/settings.ini", QSettings::IniFormat);
     driverName = sett.value("SQLite/driver").toString();
     dbName = sett.value("SQLite/dbname").toString();;
@@ -64,7 +62,7 @@ void MainWindow::on_pushButton_2_clicked()
     }
 
     ui->tableView->setModel(model);
-    model->setQuery("select * from workers");
+    model->setQuery("select worker_fio, start_work, finish_work from workers");
 }
 
 void MainWindow::on_pushButton_3_clicked()
@@ -74,5 +72,20 @@ void MainWindow::on_pushButton_3_clicked()
         db.close();
         db = QSqlDatabase();
         QSqlDatabase::removeDatabase("qt_sql_default_connection");
+    }
+}
+
+void MainWindow::on_pushButton_4_clicked()
+{
+    QString fio = ui->lineEdit->text();
+    QString start = ui->lineEdit_2->text();
+    QString finish = ui->lineEdit_3->text();
+    if (db.open() and fio!="" and start!="" and finish!=""){
+        model->setQuery("insert into workers (worker_fio, start_work, finish_work) values ('"+fio+"', '"+start+"', '"+finish+"')");
+        model->setQuery("select worker_fio, start_work, finish_work from workers");
+    }
+    else{
+        QMessageBox::critical(nullptr,"Ошибка", "Ошибка ввода данных");
+        return;
     }
 }
