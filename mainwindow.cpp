@@ -6,6 +6,8 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    QSqlQueryModel(this);
+    model = new QSqlTableModel(this,db);
     setWindowTitle("Main page");
 
 }
@@ -13,6 +15,7 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     delete ui;
+    delete model;
 }
 
 
@@ -39,9 +42,8 @@ void MainWindow::on_pushButton_clicked()
         QMessageBox::critical(nullptr,"Ошибка", "Ошибка подключения к базе данных");
         return;
     }
-    model = new QSqlTableModel(this,db);
+
     ui->tableView->setModel(model);
-    QSqlQueryModel(this);
     model->setQuery("select * from workers");
 }
 
@@ -61,16 +63,14 @@ void MainWindow::on_pushButton_2_clicked()
         return;
     }
 
-    model = new QSqlTableModel(this,db);
     ui->tableView->setModel(model);
-    QSqlQueryModel(this);
     model->setQuery("select * from workers");
 }
 
 void MainWindow::on_pushButton_3_clicked()
 {
-//в разработке
     if(db.open()){
+        ui->tableView->setModel(0);
         db.close();
         db = QSqlDatabase();
         QSqlDatabase::removeDatabase("qt_sql_default_connection");
